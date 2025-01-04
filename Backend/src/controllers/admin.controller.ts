@@ -23,7 +23,7 @@ export async function toggleActiveStatus(
     const { userId } = req.params;
     const { isActive } = req.body;
 
-    if (isActive !== "true" && isActive !== "false") {
+    if (isActive !== true && isActive !== false) {
       return res.status(400).json({
         success: false,
         message:
@@ -99,7 +99,7 @@ export async function fetchProducts(req: Request, res: Response): Promise<any> {
           pipeline: [
             {
               $project: {
-                _id: 1,
+                _id: 1, // Exclude _id if not needed
                 fullName: 1,
                 email: 1,
                 phoneNumber: 1,
@@ -108,7 +108,15 @@ export async function fetchProducts(req: Request, res: Response): Promise<any> {
           ],
         },
       },
+      {
+        $addFields: {
+          Owner_Details: {
+            $arrayElemAt: ["$Owner_Details", 0], // Get the first element of the array
+          },
+        },
+      },
     ]);
+
     res
       .status(200)
       .json({ productsWithUserDetails, message: "Details ffetched" });

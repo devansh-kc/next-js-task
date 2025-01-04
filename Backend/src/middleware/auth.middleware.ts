@@ -24,7 +24,6 @@ const authenticate = async (
   }
 
   const secretKey = process.env.JWT_Secret!;
-  console.log(secretKey);
 
   if (!secretKey) {
     return res.status(500).json({ message: "Secret key is not configured" });

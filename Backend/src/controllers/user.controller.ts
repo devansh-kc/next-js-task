@@ -36,6 +36,11 @@ export async function registerUser(req: Request, res: Response): Promise<any> {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
+    const userByEmail = await User.findOne(email);
+    if (userByEmail) {
+      return res.status(400).json("user by this email aready exists");
+    }
+
     const hashedPassword = await bcrypt.hash(passWord, 9);
     console.log(hashedPassword);
     const createdUser = new User({
@@ -67,6 +72,7 @@ export async function loginUser(req: Request, res: Response): Promise<any> {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ mmessage: "Invalid email format" });
     }
+    console.log(email, password);
 
     const exisitngUser = await User.findOne({ email });
     if (!exisitngUser) {
@@ -78,6 +84,8 @@ export async function loginUser(req: Request, res: Response): Promise<any> {
       password,
       exisitngUser.password
     );
+
+    console.log(isCorrectPassword);
     if (!isCorrectPassword) {
       return res.status(400).json({ message: "Invalid password" });
     }

@@ -37,6 +37,7 @@ export async function AddProduct(req: Request, res: Response): Promise<any> {
     const savedProduct = await createdProduct.save();
 
     res.status(200).json({
+      success: true,
       message: "Product added successfully",
       product: savedProduct,
     });
